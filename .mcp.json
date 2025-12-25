@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "kintone": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@kintone/mcp-server"],
+      "env": {
+        "KINTONE_BASE_URL": "${KINTONE_URL}",
+        "KINTONE_USERNAME": "${KINTONE_USERNAME}",
+        "KINTONE_PASSWORD": "${KINTONE_PASSWORD}"
+      }
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    }
+  }
+}
