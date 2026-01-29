@@ -1,0 +1,40 @@
+{
+  "name": "kintone-customization",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build:prod": "tsc --noEmit && node ./scripts/esbuild/build.mjs --mode=production",
+    "build:dev": "tsc --noEmit && node ./scripts/esbuild/build.mjs --mode=development",
+    "gen:fields": "node ./scripts/get-form-field.mjs",
+    "get:apps": "node ./scripts/get-apps.mjs",
+    "get:layout": "node ./scripts/get-form-layout.mjs"
+  },
+  "keywords": [
+    "kintone"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yanoshi-1009/kintone-customization-template"
+  },
+  "author": "y.idakko@gmail.com",
+  "license": "MIT",
+  "engines": {
+    "node": "18.x || 20.x || 22.x || 24.x"
+  },
+  "description": "This is my kintone customization template.",
+  "devDependencies": {
+    "@cybozu/eslint-config": "^25.0.0",
+    "@kintone/dts-gen": "^9.0.1",
+    "esbuild": "^0.27.2",
+    "eslint": "^9.39.2",
+    "prettier": "^3.7.4",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@kintone/rest-api-client": "^6.1.0",
+    "axios": "^1.13.2",
+    "dayjs": "^1.11.19",
+    "kintone-ui-component": "^1.23.1",
+    "sweetalert2": "^11.26.17"
+  }
+}
