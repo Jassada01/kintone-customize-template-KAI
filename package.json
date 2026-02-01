@@ -5,9 +5,82 @@
   "scripts": {
     "build:prod": "tsc --noEmit && node ./scripts/esbuild/build.mjs --mode=production",
     "build:dev": "tsc --noEmit && node ./scripts/esbuild/build.mjs --mode=development",
-    "gen:fields": "node ./scripts/get-form-field.mjs",
-    "get:apps": "node ./scripts/get-apps.mjs",
-    "get:layout": "node ./scripts/get-form-layout.mjs"
+
+    "app:get": "node ./scripts/app-management/app/get-app.mjs",
+    "app:get-all": "node ./scripts/app-management/app/get-apps.mjs",
+    "app:add": "node ./scripts/app-management/app/add-app.mjs",
+    "app:get-settings": "node ./scripts/app-management/app/get-app-settings.mjs",
+    "app:update-settings": "node ./scripts/app-management/app/update-app-settings.mjs",
+
+    "form:get-fields": "node ./scripts/app-management/form/get-form-field.mjs",
+    "form:add-fields": "node ./scripts/app-management/form/add-form-fields.mjs",
+    "form:update-fields": "node ./scripts/app-management/form/update-form-fields.mjs",
+    "form:delete-fields": "node ./scripts/app-management/form/delete-form-fields.mjs",
+    "form:get-layout": "node ./scripts/app-management/form/get-form-layout.mjs",
+    "form:update-layout": "node ./scripts/app-management/form/update-form-layout.mjs",
+
+    "views:get": "node ./scripts/app-management/views/get-views.mjs",
+    "views:update": "node ./scripts/app-management/views/update-views.mjs",
+
+    "customize:get": "node ./scripts/app-management/customize/get-app-customize.mjs",
+    "customize:update": "node ./scripts/app-management/customize/update-app-customize.mjs",
+
+    "acl:get-app": "node ./scripts/app-management/acl/get-app-acl.mjs",
+    "acl:update-app": "node ./scripts/app-management/acl/update-app-acl.mjs",
+    "acl:get-record": "node ./scripts/app-management/acl/get-record-acl.mjs",
+    "acl:update-record": "node ./scripts/app-management/acl/update-record-acl.mjs",
+    "acl:get-field": "node ./scripts/app-management/acl/get-field-acl.mjs",
+    "acl:update-field": "node ./scripts/app-management/acl/update-field-acl.mjs",
+    "acl:evaluate": "node ./scripts/app-management/acl/evaluate-records-acl.mjs",
+
+    "process:get": "node ./scripts/app-management/process/get-process-management.mjs",
+    "process:update": "node ./scripts/app-management/process/update-process-management.mjs",
+
+    "notify:get-general": "node ./scripts/app-management/notifications/get-general-notifications.mjs",
+    "notify:update-general": "node ./scripts/app-management/notifications/update-general-notifications.mjs",
+    "notify:get-record": "node ./scripts/app-management/notifications/get-per-record-notifications.mjs",
+    "notify:update-record": "node ./scripts/app-management/notifications/update-per-record-notifications.mjs",
+    "notify:get-reminder": "node ./scripts/app-management/notifications/get-reminder-notifications.mjs",
+    "notify:update-reminder": "node ./scripts/app-management/notifications/update-reminder-notifications.mjs",
+
+    "reports:get": "node ./scripts/app-management/reports/get-reports.mjs",
+    "reports:update": "node ./scripts/app-management/reports/update-reports.mjs",
+
+    "deploy:app": "node ./scripts/app-management/deploy/deploy-app.mjs",
+    "deploy:status": "node ./scripts/app-management/deploy/get-deploy-status.mjs",
+
+    "record:get": "node ./scripts/app-management/records/get-record.mjs",
+    "record:add": "node ./scripts/app-management/records/add-record.mjs",
+    "record:update": "node ./scripts/app-management/records/update-record.mjs",
+    "record:upsert": "node ./scripts/app-management/records/upsert-record.mjs",
+    "record:get-many": "node ./scripts/app-management/records/get-records.mjs",
+    "record:get-all": "node ./scripts/app-management/records/get-all-records.mjs",
+    "record:get-all-by-id": "node ./scripts/app-management/records/get-all-records-with-id.mjs",
+    "record:get-all-by-offset": "node ./scripts/app-management/records/get-all-records-with-offset.mjs",
+    "record:get-all-by-cursor": "node ./scripts/app-management/records/get-all-records-with-cursor.mjs",
+    "record:add-many": "node ./scripts/app-management/records/add-records.mjs",
+    "record:add-all": "node ./scripts/app-management/records/add-all-records.mjs",
+    "record:update-many": "node ./scripts/app-management/records/update-records.mjs",
+    "record:update-all": "node ./scripts/app-management/records/update-all-records.mjs",
+    "record:delete": "node ./scripts/app-management/records/delete-records.mjs",
+    "record:delete-all": "node ./scripts/app-management/records/delete-all-records.mjs",
+
+    "comment:get": "node ./scripts/app-management/records/get-record-comments.mjs",
+    "comment:add": "node ./scripts/app-management/records/add-record-comment.mjs",
+    "comment:delete": "node ./scripts/app-management/records/delete-record-comment.mjs",
+
+    "cursor:create": "node ./scripts/app-management/records/create-cursor.mjs",
+    "cursor:get": "node ./scripts/app-management/records/get-records-by-cursor.mjs",
+    "cursor:delete": "node ./scripts/app-management/records/delete-cursor.mjs",
+
+    "status:update": "node ./scripts/app-management/records/update-record-status.mjs",
+    "status:update-many": "node ./scripts/app-management/records/update-records-status.mjs",
+    "assignees:update": "node ./scripts/app-management/records/update-record-assignees.mjs",
+
+    "file:upload": "node ./scripts/app-management/file/upload-file.mjs",
+    "file:download": "node ./scripts/app-management/file/download-file.mjs",
+
+    "bulk:request": "node ./scripts/app-management/bulk/bulk-request.mjs"
   },
   "keywords": [
     "kintone"
