@@ -1,16 +1,16 @@
 # SKILL.md - kintone-rest-api-client Quick Reference
 
-คู่มือสรุปการใช้งาน `@kintone/rest-api-client` สำหรับ Claude Code
+Quick reference guide for `@kintone/rest-api-client` usage with Claude Code.
 
-## การสร้าง Client
+## Creating a Client
 
 ```ts
 import { KintoneRestAPIClient } from "@kintone/rest-api-client";
 
-// ใช้ใน kintone customization (ใช้ session ของ user ที่ login อยู่)
+// Use in kintone customization (uses the logged-in user's session)
 const client = new KintoneRestAPIClient();
 
-// หรือระบุ baseUrl
+// Or specify a baseUrl
 const client = new KintoneRestAPIClient({
   baseUrl: "https://example.cybozu.com"
 });
@@ -20,20 +20,20 @@ const client = new KintoneRestAPIClient({
 
 ## Record API (`client.record.*`)
 
-### ดึงข้อมูล Record
+### Get Records
 
 ```ts
-// ดึง 1 record
+// Get a single record
 const { record } = await client.record.getRecord({ app: "1", id: "10" });
 
-// ดึงหลาย records (สูงสุด 500)
+// Get multiple records (max 500)
 const { records } = await client.record.getRecords({
   app: "1",
   query: 'status = "Open"',
   fields: ["field1", "field2"]
 });
 
-// ดึงทั้งหมด (ไม่จำกัดจำนวน)
+// Get all records (unlimited)
 const records = await client.record.getAllRecords({
   app: "1",
   condition: 'status = "Open"',
@@ -41,10 +41,10 @@ const records = await client.record.getAllRecords({
 });
 ```
 
-### เพิ่ม Record
+### Add Records
 
 ```ts
-// เพิ่ม 1 record
+// Add a single record
 const { id, revision } = await client.record.addRecord({
   app: "1",
   record: {
@@ -52,7 +52,7 @@ const { id, revision } = await client.record.addRecord({
   }
 });
 
-// เพิ่มหลาย records (สูงสุด 100)
+// Add multiple records (max 100)
 const result = await client.record.addRecords({
   app: "1",
   records: [
@@ -61,17 +61,17 @@ const result = await client.record.addRecords({
   ]
 });
 
-// เพิ่มไม่จำกัดจำนวน
+// Add unlimited records
 const result = await client.record.addAllRecords({
   app: "1",
-  records: [/* มากกว่า 100 records */]
+  records: [/* more than 100 records */]
 });
 ```
 
-### อัปเดต Record
+### Update Records
 
 ```ts
-// อัปเดตด้วย record ID
+// Update by record ID
 await client.record.updateRecord({
   app: "1",
   id: "10",
@@ -80,7 +80,7 @@ await client.record.updateRecord({
   }
 });
 
-// อัปเดตด้วย unique key
+// Update by unique key
 await client.record.updateRecord({
   app: "1",
   updateKey: {
@@ -92,7 +92,7 @@ await client.record.updateRecord({
   }
 });
 
-// Upsert (update หรือ insert)
+// Upsert (update or insert)
 await client.record.upsertRecord({
   app: "1",
   updateKey: {
@@ -104,7 +104,7 @@ await client.record.upsertRecord({
   }
 });
 
-// อัปเดตหลาย records
+// Update multiple records
 await client.record.updateRecords({
   app: "1",
   records: [
@@ -114,16 +114,16 @@ await client.record.updateRecords({
 });
 ```
 
-### ลบ Record
+### Delete Records
 
 ```ts
-// ลบหลาย records
+// Delete multiple records
 await client.record.deleteRecords({
   app: "1",
   ids: ["1", "2", "3"]
 });
 
-// ลบไม่จำกัดจำนวน
+// Delete unlimited records
 await client.record.deleteAllRecords({
   app: "1",
   records: [
@@ -133,16 +133,16 @@ await client.record.deleteAllRecords({
 });
 ```
 
-### Comment
+### Comments
 
 ```ts
-// ดึง comments
+// Get comments
 const { comments } = await client.record.getRecordComments({
   app: "1",
   record: "10"
 });
 
-// เพิ่ม comment
+// Add a comment
 await client.record.addRecordComment({
   app: "1",
   record: "10",
@@ -152,7 +152,7 @@ await client.record.addRecordComment({
   }
 });
 
-// ลบ comment
+// Delete a comment
 await client.record.deleteRecordComment({
   app: "1",
   record: "10",
@@ -160,17 +160,17 @@ await client.record.deleteRecordComment({
 });
 ```
 
-### Process Management (สถานะ)
+### Process Management (Status)
 
 ```ts
-// อัปเดตสถานะ
+// Update status
 await client.record.updateRecordStatus({
   app: "1",
   id: "10",
   action: "Submit"
 });
 
-// อัปเดต assignees
+// Update assignees
 await client.record.updateRecordAssignees({
   app: "1",
   id: "10",
@@ -183,7 +183,7 @@ await client.record.updateRecordAssignees({
 ## File API (`client.file.*`)
 
 ```ts
-// อัปโหลดไฟล์
+// Upload a file
 const { fileKey } = await client.file.uploadFile({
   file: {
     name: "hello.txt",
@@ -191,12 +191,12 @@ const { fileKey } = await client.file.uploadFile({
   }
 });
 
-// อัปโหลดจาก path (Node.js only)
+// Upload from path (Node.js only)
 const { fileKey } = await client.file.uploadFile({
   file: { path: "/path/to/file.pdf" }
 });
 
-// แนบไฟล์กับ record
+// Attach file to a record
 await client.record.addRecord({
   app: "1",
   record: {
@@ -204,7 +204,7 @@ await client.record.addRecord({
   }
 });
 
-// ดาวน์โหลดไฟล์
+// Download a file
 const data = await client.file.downloadFile({
   fileKey: "file-key-from-record"
 });
@@ -214,55 +214,55 @@ const data = await client.file.downloadFile({
 
 ## App API (`client.app.*`)
 
-### ดึงข้อมูล App
+### Get App Info
 
 ```ts
-// ดึงข้อมูล app
+// Get app info
 const app = await client.app.getApp({ id: "1" });
 
-// ดึงหลาย apps
+// Get multiple apps
 const { apps } = await client.app.getApps({
   ids: ["1", "2"],
   name: "search name"
 });
 
-// ดึง form fields
+// Get form fields
 const { properties } = await client.app.getFormFields({ app: "1" });
 
-// ดึง form layout
+// Get form layout
 const { layout } = await client.app.getFormLayout({ app: "1" });
 
-// ดึง views
+// Get views
 const { views } = await client.app.getViews({ app: "1" });
 ```
 
-### สร้าง App ใหม่
+### Create a New App
 
 ```ts
-// สร้าง preview app
+// Create a preview app
 const { app, revision } = await client.app.addApp({
   name: "App Name",
   space: 5  // optional: space ID
 });
 
-// เพิ่ม fields
+// Add fields
 await client.app.addFormFields({
   app: "1",
   properties: {
     text_field: {
       type: "SINGLE_LINE_TEXT",
       code: "text_field",
-      label: "テキスト"
+      label: "Text"
     },
     number_field: {
       type: "NUMBER",
       code: "number_field",
-      label: "数値"
+      label: "Number"
     }
   }
 });
 
-// อัปเดต form layout
+// Update form layout
 await client.app.updateFormLayout({
   app: "1",
   layout: [
@@ -279,7 +279,7 @@ await client.app.updateFormLayout({
 ### App Settings
 
 ```ts
-// ดึง app settings
+// Get app settings
 const settings = await client.app.getAppSettings({
   app: "1",
   lang: "ja",    // optional: default, en, zh, ja, user
@@ -287,7 +287,7 @@ const settings = await client.app.getAppSettings({
 });
 // Returns: { name, description, icon, theme, revision, ... }
 
-// อัปเดต app settings
+// Update app settings
 await client.app.updateAppSettings({
   app: "1",
   name: "New App Name",
@@ -300,24 +300,24 @@ await client.app.updateAppSettings({
 });
 ```
 
-### Process Management (ワークフロー)
+### Process Management (Workflow)
 
 ```ts
-// ดึง process management settings
+// Get process management settings
 const process = await client.app.getProcessManagement({
   app: "1",
   preview: true  // optional
 });
 // Returns: { enable, states, actions, revision }
 
-// อัปเดต process management
+// Update process management
 await client.app.updateProcessManagement({
   app: "1",
   enable: true,
   states: {
-    "未着手": { name: "未着手", index: "0" },
-    "進行中": {
-      name: "進行中",
+    "Not Started": { name: "Not Started", index: "0" },
+    "In Progress": {
+      name: "In Progress",
       index: "1",
       assignee: {
         type: "ONE",  // ONE, ALL, ANY
@@ -326,11 +326,11 @@ await client.app.updateProcessManagement({
         ]
       }
     },
-    "完了": { name: "完了", index: "2" }
+    "Completed": { name: "Completed", index: "2" }
   },
   actions: [
-    { name: "開始", from: "未着手", to: "進行中" },
-    { name: "完了", from: "進行中", to: "完了" }
+    { name: "Start", from: "Not Started", to: "In Progress" },
+    { name: "Complete", from: "In Progress", to: "Completed" }
   ]
 });
 ```
@@ -338,13 +338,13 @@ await client.app.updateProcessManagement({
 ### Deploy App
 
 ```ts
-// Deploy การเปลี่ยนแปลง (pre-live -> live)
+// Deploy changes (pre-live -> live)
 await client.app.deployApp({
   apps: [{ app: "1" }],
   revert: false  // true = revert pre-live to live settings
 });
 
-// เช็คสถานะ deploy
+// Check deploy status
 const { apps } = await client.app.getDeployStatus({ apps: ["1"] });
 // Status: PROCESSING, SUCCESS, FAIL, CANCEL
 ```
@@ -353,7 +353,7 @@ const { apps } = await client.app.getDeployStatus({ apps: ["1"] });
 
 ## Bulk Request
 
-รันหลาย API requests พร้อมกัน (สูงสุด 20 requests)
+Run multiple API requests simultaneously (max 20 requests):
 
 ```ts
 const result = await client.bulkRequest({
@@ -377,13 +377,13 @@ const result = await client.bulkRequest({
 ## Plugin API (`client.plugin.*`)
 
 ```ts
-// ดึง plugins ที่ติดตั้ง
+// Get installed plugins
 const { plugins } = await client.plugin.getPlugins({ limit: 10 });
 
-// ติดตั้ง plugin
+// Install plugin
 const { id } = await client.plugin.installPlugin({ fileKey: "..." });
 
-// ถอนการติดตั้ง
+// Uninstall plugin
 await client.plugin.uninstallPlugin({ id: "plugin-id" });
 ```
 
@@ -408,7 +408,7 @@ try {
 
 ### KintoneAllRecordsError
 
-สำหรับ `addAllRecords`, `updateAllRecords`, `deleteAllRecords`:
+For `addAllRecords`, `updateAllRecords`, `deleteAllRecords`:
 
 ```ts
 import { KintoneAllRecordsError } from "@kintone/rest-api-client";
@@ -417,10 +417,10 @@ try {
   await client.record.addAllRecords({ app: "1", records });
 } catch (error) {
   if (error instanceof KintoneAllRecordsError) {
-    console.log(error.processedRecordsResult); // Records ที่สำเร็จแล้ว
-    console.log(error.unprocessedRecords);     // Records ที่ยังไม่ได้ทำ
-    console.log(error.numOfProcessedRecords);  // จำนวนที่สำเร็จ
-    console.log(error.errorIndex);             // Index ที่เกิด error
+    console.log(error.processedRecordsResult); // Successfully processed records
+    console.log(error.unprocessedRecords);     // Unprocessed records
+    console.log(error.numOfProcessedRecords);  // Number of processed records
+    console.log(error.errorIndex);             // Index where error occurred
   }
 }
 ```
@@ -439,132 +439,133 @@ import type {
 
 ---
 
-## หมายเหตุสำคัญ
+## Important Notes
 
-1. **Limit ของ API**:
-   - `getRecords`: สูงสุด 500 records
-   - `addRecords`/`updateRecords`: สูงสุด 100 records
-   - `deleteRecords`: สูงสุด 100 records
-   - `bulkRequest`: สูงสุด 20 requests
+1. **API Limits**:
+   - `getRecords`: max 500 records
+   - `addRecords`/`updateRecords`: max 100 records
+   - `deleteRecords`: max 100 records
+   - `bulkRequest`: max 20 requests
 
-2. **ใช้ `*AllRecords` methods** สำหรับข้อมูลจำนวนมาก (จะแบ่ง chunk 2000 records อัตโนมัติ)
+2. **Use `*AllRecords` methods** for large datasets (automatically chunks into 2000-record batches)
 
-3. **Revision number**: ใช้เพื่อป้องกัน conflict เมื่ออัปเดตพร้อมกัน
+3. **Revision number**: Used to prevent conflicts during concurrent updates
 
-4. **Query syntax**: ดูเพิ่มเติมที่ https://kintone.dev/en/docs/kintone/overview/query-string/
+4. **Query syntax**: See https://kintone.dev/en/docs/kintone/overview/query-string/
 
 ---
 
 ## App Management Scripts
 
-Scripts สำหรับจัดการ kintone App ผ่าน CLI จัดเป็นหมวดหมู่:
+CLI scripts for managing kintone apps organized by category:
 
-### โครงสร้าง Folder
+### Folder Structure
 
 ```text
 scripts/app-management/
 ├── common/          # Shared utilities
 ├── app/             # App info & settings
 ├── form/            # Fields & layout
-├── views/           # Views (一覧)
+├── views/           # Views
 ├── customize/       # JS/CSS customization
 ├── acl/             # Permissions
-├── process/         # Process management (ワークフロー)
+├── process/         # Process management (workflow)
 ├── notifications/   # Notifications
-├── reports/         # Reports (グラフ)
+├── reports/         # Reports (graphs)
 ├── records/         # Record CRUD, comments, cursor, status
 ├── file/            # File upload/download
 ├── bulk/            # Bulk request
-└── deploy/          # Deploy & status
+├── deploy/          # Deploy & status
+└── space/           # Space & guest management
 ```
 
-### App - ข้อมูลและการตั้งค่า App
+### App - App Info & Settings
 
 ```bash
-npm run app:get <appId>                              # ดึงข้อมูล App
-npm run app:get-all                                   # ดึงรายการ Apps ทั้งหมด
-npm run app:add "App Name" [spaceId]                  # สร้าง App ใหม่
-npm run app:get-settings <appId> [--preview]          # ดึง App Settings
-npm run app:update-settings <appId> <jsonPath>        # อัปเดต App Settings
+npm run app:get <appId>                              # Get app info
+npm run app:get-all                                   # Get all apps
+npm run app:add "App Name" [spaceId]                  # Create new app
+npm run app:get-settings <appId> [--preview]          # Get app settings
+npm run app:update-settings <appId> <jsonPath>        # Update app settings
 ```
 
-### Form - Fields และ Layout
+### Form - Fields & Layout
 
 ```bash
-npm run form:get-fields <appId>                       # ดึง Fields + generate TypeScript
-npm run form:add-fields <appId> <jsonPath>            # เพิ่ม Fields
-npm run form:update-fields <appId> <jsonPath>         # อัปเดต Fields
-npm run form:delete-fields <appId> <code1> [code2]    # ลบ Fields
-npm run form:get-layout <appId>                       # ดึง Layout
-npm run form:update-layout <appId> <jsonPath>         # อัปเดต Layout
+npm run form:get-fields <appId>                       # Get fields + generate TypeScript
+npm run form:add-fields <appId> <jsonPath>            # Add fields
+npm run form:update-fields <appId> <jsonPath>         # Update fields
+npm run form:delete-fields <appId> <code1> [code2]    # Delete fields
+npm run form:get-layout <appId>                       # Get layout
+npm run form:update-layout <appId> <jsonPath>         # Update layout
 ```
 
-### Views - มุมมอง (一覧)
+### Views
 
 ```bash
-npm run views:get <appId> [--preview]                 # ดึง Views
-npm run views:update <appId> <jsonPath>               # อัปเดต Views
+npm run views:get <appId> [--preview]                 # Get views
+npm run views:update <appId> <jsonPath>               # Update views
 ```
 
 ### Customize - JS/CSS Customization
 
 ```bash
-npm run customize:get <appId> [--preview]             # ดึง Customization settings
-npm run customize:update <appId> <jsonPath>           # อัปเดต Customization
+npm run customize:get <appId> [--preview]             # Get customization settings
+npm run customize:update <appId> <jsonPath>           # Update customization
 ```
 
-### ACL - Permissions (アクセス権)
+### ACL - Permissions
 
 ```bash
-npm run acl:get-app <appId> [--preview]               # ดึง App permissions
-npm run acl:update-app <appId> <jsonPath>             # อัปเดต App permissions
-npm run acl:get-record <appId> [--preview]            # ดึง Record permissions
-npm run acl:update-record <appId> <jsonPath>          # อัปเดต Record permissions
-npm run acl:get-field <appId> [--preview]             # ดึง Field permissions
-npm run acl:update-field <appId> <jsonPath>           # อัปเดต Field permissions
-npm run acl:evaluate <appId> <recordId1> [recordId2]  # ตรวจสอบ permissions ของ records
+npm run acl:get-app <appId> [--preview]               # Get app permissions
+npm run acl:update-app <appId> <jsonPath>             # Update app permissions
+npm run acl:get-record <appId> [--preview]            # Get record permissions
+npm run acl:update-record <appId> <jsonPath>          # Update record permissions
+npm run acl:get-field <appId> [--preview]             # Get field permissions
+npm run acl:update-field <appId> <jsonPath>           # Update field permissions
+npm run acl:evaluate <appId> <recordId1> [recordId2]  # Evaluate record permissions
 ```
 
-### Process - Process Management (ワークフロー)
+### Process - Process Management (Workflow)
 
 ```bash
-npm run process:get <appId> [--preview]               # ดึง Process Management
-npm run process:update <appId> <jsonPath>             # อัปเดต Process Management
+npm run process:get <appId> [--preview]               # Get process management
+npm run process:update <appId> <jsonPath>             # Update process management
 ```
 
-### Notifications - การแจ้งเตือน
+### Notifications
 
 ```bash
-npm run notify:get-general <appId> [--preview]        # ดึง General notifications
-npm run notify:update-general <appId> <jsonPath>      # อัปเดต General notifications
-npm run notify:get-record <appId> [--preview]         # ดึง Per-record notifications
-npm run notify:update-record <appId> <jsonPath>       # อัปเดต Per-record notifications
-npm run notify:get-reminder <appId> [--preview]       # ดึง Reminder notifications
-npm run notify:update-reminder <appId> <jsonPath>     # อัปเดต Reminder notifications
+npm run notify:get-general <appId> [--preview]        # Get general notifications
+npm run notify:update-general <appId> <jsonPath>      # Update general notifications
+npm run notify:get-record <appId> [--preview]         # Get per-record notifications
+npm run notify:update-record <appId> <jsonPath>       # Update per-record notifications
+npm run notify:get-reminder <appId> [--preview]       # Get reminder notifications
+npm run notify:update-reminder <appId> <jsonPath>     # Update reminder notifications
 ```
 
-### Reports - กราฟ (グラフ)
+### Reports (Graphs)
 
 ```bash
-npm run reports:get <appId> [--preview]               # ดึง Reports
-npm run reports:update <appId> <jsonPath>             # อัปเดต Reports
+npm run reports:get <appId> [--preview]               # Get reports
+npm run reports:update <appId> <jsonPath>             # Update reports
 ```
 
-### Deploy - การ Deploy
+### Deploy
 
 ```bash
-npm run deploy:app <appId> [--revert] [--no-wait]     # Deploy App
-npm run deploy:status <appId> [appId2] ...            # เช็คสถานะ Deploy
+npm run deploy:app <appId> [--revert] [--no-wait]     # Deploy app
+npm run deploy:status <appId> [appId2] ...            # Check deploy status
 ```
 
-### Records - จัดการ Record
+### Records - Record Management
 
 ```bash
 # Single Record
-npm run record:get <appId> <recordId>                 # ดึง Record
-npm run record:add <appId> [recordJsonPath]           # เพิ่ม Record
-npm run record:update <appId> <recordId> <jsonPath>   # อัปเดต Record
-npm run record:upsert <appId> <keyField> <keyValue> [jsonPath]  # Upsert Record
+npm run record:get <appId> <recordId>                 # Get record
+npm run record:add <appId> [recordJsonPath]           # Add record
+npm run record:update <appId> <recordId> <jsonPath>   # Update record
+npm run record:upsert <appId> <keyField> <keyValue> [jsonPath]  # Upsert record
 
 # Multiple Records (max 500 for get, 100 for others)
 npm run record:get-many <appId> [--query="..."] [--fields=f1,f2]
@@ -582,7 +583,7 @@ npm run record:update-all <appId> <recordsJsonPath> [--upsert]
 npm run record:delete-all <appId> <recordsJsonPath>
 ```
 
-### Comments - ความคิดเห็นใน Record
+### Comments - Record Comments
 
 ```bash
 npm run comment:get <appId> <recordId> [--order=asc|desc] [--limit=N]
@@ -591,37 +592,37 @@ npm run comment:add <appId> <recordId> --json=<commentJsonPath>  # with mentions
 npm run comment:delete <appId> <recordId> <commentId>
 ```
 
-### Cursor - ดึง Record จำนวนมาก
+### Cursor - Fetch Large Record Sets
 
 ```bash
-npm run cursor:create <appId> [--query="..."] [--size=N]   # สร้าง cursor
-npm run cursor:get <cursorId>                              # ดึง records
-npm run cursor:delete <cursorId>                           # ลบ cursor
+npm run cursor:create <appId> [--query="..."] [--size=N]   # Create cursor
+npm run cursor:get <cursorId>                              # Get records
+npm run cursor:delete <cursorId>                           # Delete cursor
 ```
 
-### Status/Assignees - Process Management (ワークフロー)
+### Status/Assignees - Process Management (Workflow)
 
 ```bash
 npm run status:update <appId> <recordId> "<action>" [--assignee=<user>]
 npm run status:update-many <appId> <recordsJsonPath>
 npm run assignees:update <appId> <recordId> <user1> [user2] ...
-npm run assignees:update <appId> <recordId> --clear        # ลบ assignees
+npm run assignees:update <appId> <recordId> --clear        # Remove assignees
 ```
 
-### File - อัปโหลด/ดาวน์โหลดไฟล์
+### File - Upload/Download
 
 ```bash
-npm run file:upload <filePath>                            # อัปโหลดไฟล์ (returns fileKey)
-npm run file:download <fileKey> [outputPath]              # ดาวน์โหลดไฟล์
+npm run file:upload <filePath>                            # Upload file (returns fileKey)
+npm run file:download <fileKey> [outputPath]              # Download file
 ```
 
-### Bulk - รันหลาย API พร้อมกัน
+### Bulk - Run Multiple APIs
 
 ```bash
-npm run bulk:request <requestsJsonPath>                   # รันหลาย API (max 20)
+npm run bulk:request <requestsJsonPath>                   # Run multiple APIs (max 20)
 ```
 
-JSON format สำหรับ bulk request:
+JSON format for bulk request:
 
 ```json
 [
@@ -630,20 +631,20 @@ JSON format สำหรับ bulk request:
 ]
 ```
 
-### ตัวอย่างการสร้าง App ใหม่
+### Example: Creating a New App
 
 ```bash
-# 1. สร้าง App
-npm run app:add "顧客管理"
+# 1. Create App
+npm run app:add "Customer Management"
 # Output: App ID: 123
 
-# 2. เพิ่ม Fields
+# 2. Add Fields
 npm run form:add-fields 123 ./fields.json
 
-# 3. อัปเดต Layout
+# 3. Update Layout
 npm run form:update-layout 123 ./layout.json
 
-# 4. ตั้งค่า Views
+# 4. Configure Views
 npm run views:update 123 ./views.json
 
 # 5. Deploy
@@ -654,26 +655,26 @@ npm run deploy:app 123
 
 ## Field Types Reference
 
-| Type | คำอธิบาย | ตัวอย่าง value |
-|------|----------|----------------|
-| `SINGLE_LINE_TEXT` | ข้อความบรรทัดเดียว | `{ value: "text" }` |
-| `MULTI_LINE_TEXT` | ข้อความหลายบรรทัด | `{ value: "line1\nline2" }` |
+| Type | Description | Example Value |
+|------|-------------|---------------|
+| `SINGLE_LINE_TEXT` | Single line text | `{ value: "text" }` |
+| `MULTI_LINE_TEXT` | Multi-line text | `{ value: "line1\nline2" }` |
 | `RICH_TEXT` | Rich text (HTML) | `{ value: "<p>text</p>" }` |
-| `NUMBER` | ตัวเลข | `{ value: "123" }` |
-| `CALC` | คำนวณ | (read-only) |
+| `NUMBER` | Number | `{ value: "123" }` |
+| `CALC` | Calculated field | (read-only) |
 | `DROP_DOWN` | Dropdown | `{ value: "option1" }` |
 | `RADIO_BUTTON` | Radio button | `{ value: "option1" }` |
 | `CHECK_BOX` | Checkbox | `{ value: ["opt1", "opt2"] }` |
 | `MULTI_SELECT` | Multi-select | `{ value: ["opt1", "opt2"] }` |
-| `DATE` | วันที่ | `{ value: "2024-01-15" }` |
-| `TIME` | เวลา | `{ value: "10:30" }` |
-| `DATETIME` | วันที่และเวลา | `{ value: "2024-01-15T10:30:00Z" }` |
+| `DATE` | Date | `{ value: "2024-01-15" }` |
+| `TIME` | Time | `{ value: "10:30" }` |
+| `DATETIME` | Date and time | `{ value: "2024-01-15T10:30:00Z" }` |
 | `LINK` | Link | `{ value: "https://..." }` |
-| `FILE` | ไฟล์แนบ | `{ value: [{ fileKey: "..." }] }` |
-| `USER_SELECT` | เลือก User | `{ value: [{ code: "user1" }] }` |
-| `ORGANIZATION_SELECT` | เลือกองค์กร | `{ value: [{ code: "org1" }] }` |
-| `GROUP_SELECT` | เลือก Group | `{ value: [{ code: "group1" }] }` |
-| `SUBTABLE` | ตาราง | `{ value: [{ value: { field: { value } } }] }` |
+| `FILE` | File attachment | `{ value: [{ fileKey: "..." }] }` |
+| `USER_SELECT` | User selection | `{ value: [{ code: "user1" }] }` |
+| `ORGANIZATION_SELECT` | Organization selection | `{ value: [{ code: "org1" }] }` |
+| `GROUP_SELECT` | Group selection | `{ value: [{ code: "group1" }] }` |
+| `SUBTABLE` | Subtable | `{ value: [{ value: { field: { value } } }] }` |
 
 ---
 
@@ -716,7 +717,7 @@ kintone.events.on("app.report.show", (event) => { ... });
 ### Mobile Events
 
 ```ts
-// เหมือน Desktop แต่เปลี่ยน "app" เป็น "mobile.app"
+// Same as Desktop but replace "app" with "mobile.app"
 kintone.events.on("mobile.app.record.index.show", (event) => { ... });
 kintone.events.on("mobile.app.record.detail.show", (event) => { ... });
 kintone.events.on("mobile.app.record.create.show", (event) => { ... });
@@ -726,20 +727,20 @@ kintone.events.on("mobile.app.record.edit.show", (event) => { ... });
 ### Event Object Properties
 
 ```ts
-// event object ทั่วไป
+// General event object
 {
   appId: number,
-  recordId: number,  // ไม่มีใน create
-  record: { ... },   // record data
-  type: string       // event type
+  recordId: number,  // Not available in create events
+  record: { ... },   // Record data
+  type: string       // Event type
 }
 
-// สำหรับ change events
+// For change events
 {
   ...
   changes: {
-    field: { value: ... },  // field ที่เปลี่ยน
-    row: { ... }            // สำหรับ subtable
+    field: { value: ... },  // Changed field
+    row: { ... }            // For subtable changes
   }
 }
 ```
@@ -747,13 +748,129 @@ kintone.events.on("mobile.app.record.edit.show", (event) => { ... });
 ### Return Values
 
 ```ts
-// ยกเลิก submit
+// Cancel submit
 return false;
 
-// แก้ไข record ก่อน save
+// Modify record before save
 event.record.field_code.value = "new value";
 return event;
 
 // Async operation
 return kintone.Promise.resolve(event);
+```
+
+---
+
+## Space API (`client.space.*`)
+
+### Get Space Info
+
+```ts
+// Get space info
+const space = await client.space.getSpace({ id: "1" });
+// Returns: { id, name, defaultThread, isPrivate, creator, memberCount, body, useMultiThread, isGuest, attachedApps, fixedMember, permissions, ... }
+
+// Get space members
+const { members } = await client.space.getSpaceMembers({ id: "1" });
+// Returns: { members: [{ entity: { type, code }, isAdmin, isImplicit, includeSubs }] }
+```
+
+### Manage Spaces
+
+```ts
+// Update space settings
+await client.space.updateSpace({
+  id: "1",
+  name: "New Name",
+  isPrivate: true,
+  fixedMember: false,
+  useMultiThread: true,
+  permissions: { createApp: "EVERYONE" }
+});
+
+// Update space body (HTML)
+await client.space.updateSpaceBody({ id: "1", body: "<h1>Welcome</h1>" });
+
+// Update members
+await client.space.updateSpaceMembers({
+  id: "1",
+  members: [
+    { entity: { type: "USER", code: "user1" }, isAdmin: true },
+    { entity: { type: "GROUP", code: "group1" }, isAdmin: false }
+  ]
+});
+
+// Delete space
+await client.space.deleteSpace({ id: "1" });
+
+// Create space from template
+const { id } = await client.space.addSpaceFromTemplate({
+  id: "1",  // template ID
+  name: "New Space",
+  members: [{ entity: { type: "USER", code: "admin" }, isAdmin: true }],
+  isPrivate: false,
+  isGuest: false
+});
+```
+
+### Threads
+
+```ts
+// Create thread (requires multi-thread enabled)
+const { id } = await client.space.addThread({ space: "1", name: "Thread Name" });
+
+// Update thread
+await client.space.updateThread({ id: "222", name: "New Name", body: "<p>Body</p>" });
+
+// Add comment
+const { id: commentId } = await client.space.addThreadComment({
+  space: "1",
+  thread: "222",
+  comment: {
+    text: "Comment text",
+    mentions: [{ code: "user1", type: "USER" }]
+  }
+});
+```
+
+### Guest Users
+
+```ts
+// Add guest users
+await client.space.addGuests({
+  guests: [{
+    name: "Guest",
+    code: "guest@example.com",
+    password: "tempPass123",
+    timezone: "Asia/Tokyo",
+    locale: "ja"
+  }]
+});
+
+// Add guest to space
+await client.space.updateSpaceGuests({
+  id: "1",
+  guests: ["guest@example.com"]
+});
+
+// Delete guest users
+await client.space.deleteGuests({ guests: ["guest@example.com"] });
+```
+
+### Space CLI Commands
+
+```bash
+npm run space:get <spaceId>                              # Get space info
+npm run space:update <spaceId> <jsonPath>                 # Update space settings
+npm run space:delete <spaceId> --confirm                  # Delete space
+npm run space:update-body <spaceId> <htmlPath>            # Update space body
+npm run space:get-members <spaceId>                       # Get space members
+npm run space:update-members <spaceId> <jsonPath>         # Update members
+npm run space:add-thread <spaceId> "Thread Name"          # Create thread
+npm run space:update-thread <threadId> --name="..."       # Update thread
+npm run space:add-thread-comment <spaceId> <threadId> "text"  # Add comment
+npm run space:add-from-template <templateId> "Name" <membersJsonPath>  # Create space from template
+npm run guest:add <guestsJsonPath>                        # Add guest users
+npm run guest:delete <email> --confirm                    # Delete guest users
+npm run guest:update-space <spaceId> <email1> [email2]    # Update guest members in space
 ```

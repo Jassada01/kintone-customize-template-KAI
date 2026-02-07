@@ -80,7 +80,22 @@
     "file:upload": "node ./scripts/app-management/file/upload-file.mjs",
     "file:download": "node ./scripts/app-management/file/download-file.mjs",
 
-    "bulk:request": "node ./scripts/app-management/bulk/bulk-request.mjs"
+    "bulk:request": "node ./scripts/app-management/bulk/bulk-request.mjs",
+
+    "space:get": "node ./scripts/app-management/space/get-space.mjs",
+    "space:update": "node ./scripts/app-management/space/update-space.mjs",
+    "space:delete": "node ./scripts/app-management/space/delete-space.mjs",
+    "space:update-body": "node ./scripts/app-management/space/update-space-body.mjs",
+    "space:get-members": "node ./scripts/app-management/space/get-space-members.mjs",
+    "space:update-members": "node ./scripts/app-management/space/update-space-members.mjs",
+    "space:add-thread": "node ./scripts/app-management/space/add-thread.mjs",
+    "space:update-thread": "node ./scripts/app-management/space/update-thread.mjs",
+    "space:add-thread-comment": "node ./scripts/app-management/space/add-thread-comment.mjs",
+    "space:add-from-template": "node ./scripts/app-management/space/add-space-from-template.mjs",
+
+    "guest:add": "node ./scripts/app-management/space/add-guests.mjs",
+    "guest:delete": "node ./scripts/app-management/space/delete-guests.mjs",
+    "guest:update-space": "node ./scripts/app-management/space/update-space-guests.mjs"
   },
   "keywords": [
     "kintone"

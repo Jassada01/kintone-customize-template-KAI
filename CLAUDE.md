@@ -26,50 +26,50 @@ mkdir .cert && openssl req -x509 -newkey rsa:4096 -keyout .cert/private.key -out
 
 ### Get kintone App Structure
 
-ดึงโครงสร้าง Form Field จาก kintone App และ generate TypeScript type definitions:
+Fetch form field structure from a kintone app and generate TypeScript type definitions:
 
 ```sh
 npm run gen:fields <appId>
 
-# ตัวอย่าง
+# Example
 npm run gen:fields 51
 ```
 
-Script นี้จะสร้าง 2 ไฟล์:
+This script generates 2 files:
 
-- `src/js/fields.d.ts` - TypeScript type definitions สำหรับ fields ใน App
-- `kintone-app-structure/app_<appId>_formField.json` - โครงสร้าง Form Field แบบ JSON
+- `src/js/fields.d.ts` - TypeScript type definitions for the app's fields
+- `kintone-app-structure/app_<appId>_formField.json` - Form field structure as JSON
 
 ### Get kintone App List
 
-ดึงรายการ Apps ทั้งหมดจาก kintone:
+Fetch all apps from kintone:
 
 ```sh
 npm run get:apps
 ```
 
-Script นี้จะสร้างไฟล์ `kintone-app-structure/apps.json` ที่มีข้อมูล Apps ทั้งหมด เช่น appId, name, creator, modifier ฯลฯ
+This script generates `kintone-app-structure/apps.json` containing all app data such as appId, name, creator, modifier, etc.
 
 ### Get kintone Form Layout
 
-ดึงโครงสร้าง Form Layout (การจัดวาง fields) จาก kintone App:
+Fetch form layout (field arrangement) from a kintone app:
 
 ```sh
 npm run get:layout <appId>
 
-# ตัวอย่าง
+# Example
 npm run get:layout 51
 ```
 
-Script นี้จะสร้างไฟล์ `kintone-app-structure/app_<appId>_formLayout.json` ที่มีข้อมูลการจัดวาง fields ใน form
+This script generates `kintone-app-structure/app_<appId>_formLayout.json` containing the field layout information.
 
 ### Environment Variables
 
-Scripts ข้างต้นต้องตั้งค่า `.env` ก่อนใช้งาน (copy จาก `.env.example`):
+The scripts above require a `.env` file (copy from `.env.example`):
 
 ```sh
 cp .env.example .env
-# แก้ไขค่าใน .env ให้ตรงกับ kintone environment ของคุณ
+# Edit .env to match your kintone environment
 ```
 
 ```env
@@ -95,7 +95,7 @@ npx eslint .
 
 ## Documentation
 
-- **kintone REST API**: ดูเอกสารใน `kintone-rest-api-client-docs`
+- **kintone REST API**: See documentation in `kintone-rest-api-client-docs`
 
 ## Key Dependencies
 
@@ -109,3 +109,215 @@ npx eslint .
 - ESLint: Cybozu preset with Prettier
 - Prettier: Uses `trailingComma: "none"` to avoid JSON.parse errors in kintone
 - TypeScript: Strict mode enabled with ES2024 target
+
+---
+
+## Requirement-Driven App Creation Workflow
+
+### Overview
+
+Place requirement files in the `sample/` folder and let Claude read and create kintone Apps automatically.
+
+**Supported formats:**
+
+- **Excel (.xlsx)** — User should export to CSV before placing in `sample/` (Claude cannot directly read binary Excel files)
+- **PDF** — Specification documents, form screenshots
+- **Images (.png, .jpg)** — Screenshots of desired forms or existing systems
+- **Text (.txt)** — Plain text requirements
+- **CSV** — Field definitions, option lists, sample data
+
+### Workflow Steps
+
+When a user requests kintone App creation from requirements in `sample/`, follow these steps:
+
+#### Step 1: Read and Analyze Requirements
+
+1. List all files in `sample/`
+2. Read each file to understand:
+   - What App(s) need to be created
+   - Required fields (types, labels, field codes, options)
+   - Form layout arrangement
+   - Required views
+   - Process management (workflow) if needed
+   - Required permissions
+   - Notifications to configure
+3. **Summarize findings and confirm with the user before proceeding**
+
+#### Step 2: Generate JSON Configuration
+
+Create JSON config files in `kintone-app-structure/`:
+
+- `new_app_<name>_fields.json` — Field definitions
+- `new_app_<name>_layout.json` — Form layout
+- `new_app_<name>_views.json` — Views (if needed)
+- `new_app_<name>_process.json` — Process management (if needed)
+- `new_app_<name>_settings.json` — App settings (if needed)
+
+**IMPORTANT: Focus on native kintone features only. Do NOT add JavaScript/CSS customization unless the user explicitly requests it.**
+
+#### Step 3: Create the App
+
+Run scripts in this order:
+
+```bash
+# 1. Create App
+npm run app:add "<appName>" [spaceId]
+# Note the returned App ID
+
+# 2. Add Fields
+npm run form:add-fields <appId> ./kintone-app-structure/new_app_<name>_fields.json
+
+# 3. Update Layout
+npm run form:update-layout <appId> ./kintone-app-structure/new_app_<name>_layout.json
+
+# 4. Configure Views (optional)
+npm run views:update <appId> ./kintone-app-structure/new_app_<name>_views.json
+
+# 5. Configure Process Management (optional)
+npm run process:update <appId> ./kintone-app-structure/new_app_<name>_process.json
+
+# 6. Configure App Settings (optional)
+npm run app:update-settings <appId> ./kintone-app-structure/new_app_<name>_settings.json
+
+# 7. Deploy
+npm run deploy:app <appId>
+```
+
+#### Step 4: Verify Results
+
+1. Check deploy status: `npm run deploy:status <appId>`
+2. Fetch created fields: `npm run form:get-fields <appId>`
+3. Report App URL: `https://<domain>/k/<appId>/`
+
+### Requirement-to-Field-Type Mapping
+
+| Requirement Pattern | kintone Field Type | Notes |
+|---|---|---|
+| Name, title, short text | `SINGLE_LINE_TEXT` | |
+| Description, notes, long text | `MULTI_LINE_TEXT` | |
+| Formatted text, HTML content | `RICH_TEXT` | |
+| Quantity, price, amount | `NUMBER` | Set unit, decimal places |
+| Calculated value, formula | `CALC` | Set expression |
+| Single selection (dropdown) | `DROP_DOWN` | Set options |
+| Single selection (radio) | `RADIO_BUTTON` | Set options |
+| Multiple selection (checkbox) | `CHECK_BOX` | Set options |
+| Multiple selection (list) | `MULTI_SELECT` | Set options |
+| Date | `DATE` | |
+| Time | `TIME` | |
+| Date and time | `DATETIME` | |
+| URL, email link | `LINK` | |
+| File attachment | `FILE` | |
+| Assignee, person | `USER_SELECT` | |
+| Department | `ORGANIZATION_SELECT` | |
+| Group | `GROUP_SELECT` | |
+| Repeating data, line items | `SUBTABLE` | Contains sub-fields |
+| Lookup from another app | `SINGLE_LINE_TEXT` + lookup | Set lookup config |
+| Related records | `RELATED_RECORDS` | Set referenceTable |
+
+### Field Code Convention
+
+- Use **snake_case** in English (e.g., `customer_name`, `order_date`)
+- Labels should match the language of the requirements (often Japanese or Thai)
+- Field codes must be unique within the app
+- Avoid reserved names: `$id`, `$revision`, `Record_number`, `Created_by`, `Created_datetime`, `Updated_by`, `Updated_datetime`
+
+### JSON Template Examples
+
+#### Fields JSON
+
+```json
+{
+  "customer_name": {
+    "type": "SINGLE_LINE_TEXT",
+    "code": "customer_name",
+    "label": "Customer Name",
+    "required": true,
+    "unique": false
+  },
+  "status": {
+    "type": "DROP_DOWN",
+    "code": "status",
+    "label": "Status",
+    "options": {
+      "Open": { "label": "Open", "index": "0" },
+      "In Progress": { "label": "In Progress", "index": "1" },
+      "Closed": { "label": "Closed", "index": "2" }
+    },
+    "defaultValue": "Open"
+  },
+  "amount": {
+    "type": "NUMBER",
+    "code": "amount",
+    "label": "Amount",
+    "digit": true,
+    "unit": "$",
+    "unitPosition": "BEFORE"
+  }
+}
+```
+
+#### Layout JSON
+
+```json
+{
+  "layout": [
+    {
+      "type": "ROW",
+      "fields": [
+        { "type": "SINGLE_LINE_TEXT", "code": "customer_name", "size": { "width": "400" } }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        { "type": "DROP_DOWN", "code": "status", "size": { "width": "200" } },
+        { "type": "NUMBER", "code": "amount", "size": { "width": "200" } }
+      ]
+    }
+  ]
+}
+```
+
+#### Views JSON
+
+```json
+{
+  "views": {
+    "All Records": {
+      "type": "LIST",
+      "name": "All Records",
+      "fields": ["customer_name", "status", "amount"],
+      "filterCond": "",
+      "sort": "Record_number desc",
+      "index": "0"
+    }
+  }
+}
+```
+
+---
+
+## Space Management
+
+### Space Commands
+
+```bash
+npm run space:get <spaceId>                              # Get space info
+npm run space:update <spaceId> <jsonPath>                 # Update space settings
+npm run space:delete <spaceId> --confirm                  # Delete space
+npm run space:update-body <spaceId> <htmlPath>            # Update space body
+npm run space:get-members <spaceId>                       # Get space members
+npm run space:update-members <spaceId> <jsonPath>         # Update members
+npm run space:add-thread <spaceId> "Thread Name"          # Create thread
+npm run space:update-thread <threadId> --name="..."       # Update thread
+npm run space:add-thread-comment <spaceId> <threadId> "text"  # Add comment
+npm run space:add-from-template <templateId> "Name" <membersJsonPath>  # Create space from template
+```
+
+### Guest Commands
+
+```bash
+npm run guest:add <guestsJsonPath>                        # Add guest users
+npm run guest:delete <email> --confirm                    # Delete guest users
+npm run guest:update-space <spaceId> <email1> [email2]    # Update guest members in space
+```
